@@ -19,7 +19,6 @@ namespace CardGrid
         [Range(0, 1)] public float ChanceItemOnFiled = 0.1f;
         public float SpeedRecession = 0.1f;
         public float SpeedFilling = 0.1f;
-
         
         //Local fixedUpdate variables, but cached for the glory of the garbage collector
         Ray _ray;
@@ -35,6 +34,7 @@ namespace CardGrid
         void FixedUpdate()
         {
             if (!_inputActive) return;
+            
             if (RaycastIsHitCard(out var cardMonobeh))
             {
                 DebugSystem.DebugLog($"Raycast hit card {cardMonobeh.CardState.name}" +
@@ -55,7 +55,6 @@ namespace CardGrid
                 }
             }
 
-            //Drag
             if (_dragGameObjectCard != null && _plane.Raycast(_ray, out var enter))
             {
                 Drag(enter);
@@ -173,10 +172,10 @@ namespace CardGrid
             {
                 RecessionField(cells);
                 yield return StartCoroutine(Filling(cells));
-                yield return StartCoroutine(CellsCombinations(cells));
+                //yield return StartCoroutine(CellsCombinations(cells));
 
                 RecessionInventory(items);
-                yield return StartCoroutine(ItemsCombinations(items));
+                //yield return StartCoroutine(ItemsCombinations(items));
                 yield return StartCoroutine(GetNewItemsForField(cells, items));
             } while (_needRecession);
 
@@ -291,7 +290,6 @@ namespace CardGrid
             yield return new WaitForSeconds(SpeedFilling);
         }
         
-        //TODO
         IEnumerator CellsCombinations(Card[,] cards)
         {
             yield return null;
@@ -320,7 +318,6 @@ namespace CardGrid
             }
         }
         
-        //TODO
         IEnumerator ItemsCombinations(Card[,] items)
         {
             yield return null;
@@ -602,6 +599,5 @@ namespace CardGrid
 
             _highlightCards = new List<CardGameObject>();
         }
-
     }
 }

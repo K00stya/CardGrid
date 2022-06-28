@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -51,17 +49,17 @@ namespace CardGrid
                 {
                     DebugSystem.DebugLog("Save can't be load. First active.", DebugSystem.Type.SaveSystem);
                     _CommonState = new PlayerCommonState();
+                    Continue.gameObject.SetActive(false);
                 }
                 else
                 {
                     DebugSystem.DebugLog("Load exist save", DebugSystem.Type.SaveSystem); 
+                    Continue.gameObject.SetActive(_CommonState.InBattle);
                 }
                 BestScore.text = _CommonState.BestScore.ToString();
                 AudioSource.volume = _CommonState.Volume;
 
-                Continue.gameObject.SetActive(_CommonState.InBattle);
-
-                //LoadMenu
+                //OpenMenu
                 Menu.SetActive(true);
                 VolumeSlider.SetValueWithoutNotify(_CommonState.Volume);
                 LanguageDropdown.SetValueWithoutNotify((int) _CommonState.Language);
@@ -151,30 +149,6 @@ namespace CardGrid
             _cardMonobehsPool.Clear();
         }
 
-        //On android, pauses can become an out
-        void OnApplicationPause(bool pauseStatus)
-        {
-            //Save();
-        }
-
-        void OnApplicationQuit()
-        {
-            Save();
-        }
-
-        void Save()
-        {
-            DebugSystem.DebugLog("Save on pause/out", DebugSystem.Type.SaveSystem);
-            Debug.Log(_CommonState);
-            ES3.Save(SaveName, _CommonState);
-        }
-
-        [MenuItem("CardGrid/DeleteSave")]
-        public static void DeleteSave()
-        {
-            ES3.DeleteFile();
-        }
-
         Card CreateNewRandomCard()
         {
             string newName;
@@ -262,6 +236,24 @@ namespace CardGrid
                     _CommonState.Language = Language.Russian;
                     break;
             }
+        }
+        
+        void OnApplicationQuit()
+        {
+            Save();
+        }
+
+        void Save()
+        {
+            DebugSystem.DebugLog("Save on pause/out", DebugSystem.Type.SaveSystem);
+            Debug.Log(_CommonState);
+            ES3.Save(SaveName, _CommonState);
+        }
+
+        [MenuItem("CardGrid/DeleteSave")]
+        public static void DeleteSave()
+        {
+            ES3.DeleteFile();
         }
     }
 }
